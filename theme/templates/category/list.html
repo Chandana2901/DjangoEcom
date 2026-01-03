@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Category List
+{% endblock %}
+
+{% block content %}
+
+    <table class="table-auto min-w-full border-separate">
+        <thead>
+            <tr >
+                <th class='px-4 py-2 text-left text-md font-medium text-gray-800'>ID</th>
+                <th class='px-4 py-2 text-left text-md font-medium text-gray-800'>Name</th>
+                <th class='px-4 py-2 text-left text-md font-medium text-gray-800'>Created At</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-100">
+            {% for c in categories %}
+            <tr class='odd:bg-blue-50 even:bg-white hover:bg-gray-50'>
+                <td class="px-4 py-2 whitespace-nowrap">{{c.id}}</td>
+                <td class="px-4 py-2">{{c.name}}</td>
+                <td class="px-4 py-2 whitespace-nowrap">{{c.createdAt}}</td>
+                <td>
+                    <form method="POST" action="{% url 'category:deleteCategory' c.id %}">
+                        {% csrf_token %}
+                    <button class="flex items-center justify-center p-2 text-red-600 rounded-full hover:bg-red-100 hover:text-red-800" type="submit">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+        <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.34 6.75m0 0a2.25 2.25 0 0 1 2.244-2.077h4.5a2.25 2.25 0 0 1 2.244 2.077M19.5 4.5h-15" />
+    </svg>
+</button>
+</form>
+</form>
+
+                    
+                    <td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+<div class = "mt-8">
+    <form method='POST' action="{% url 'category:createCategory' %}">
+        {% csrf_token %}
+        <label for="name">Category Name:</label>
+        <input type="text" id="name" name="name" class="border border-gray-300 rounded-md p-1" />
+        <button type="submit" class="ml-2 bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">Create</button>
+    </form>
+</div>
+{% endblock %}
