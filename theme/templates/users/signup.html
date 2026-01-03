@@ -6,7 +6,7 @@ Sign Up
 
 
 {% block content %}
-<form method='POST' action=''>
+<form method='POST' action="{% url 'users:signup' %}">
     {% csrf_token %}
     <label for='name'>Name : </label>
     <input type="text" id="name" name="name" class="border border-gray-300 rounded-md p-1" /><br> <br>
