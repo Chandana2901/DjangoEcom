@@ -8,7 +8,7 @@ class UserManager(BaseUserManager):
             return ValueError('Email is required')
 
         email = self.normalize_email(email=email)
-        user = self.model(email=email, **extra)
+        user = self.model(email=email, role=role, **extra)
         user.set_password(password)
         user.save(using=self._db)
         try:

@@ -13,7 +13,7 @@ def createUser(request):
         password = request.POST.get('password')
         phoneNumber = request.POST.get('phoneNumber')
         address = request.POST.get('address')
-        role = request.POST.get('role', 'consumer')
+        role = request.POST.get('role', 'Consumer')
         Users.objects.create_user(name=name, email=email, password=password, phoneNumber=phoneNumber, address=address, role=role)
         return redirect('category:categories')
     return render(request, 'users/signup.html')
