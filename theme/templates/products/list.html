@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Category List
+Product List
 {% endblock %}
 
 {% block content %}
@@ -11,9 +11,12 @@ Category List
             <tr >
                 <th class='px-4 py-2 text-left text-md font-medium text-gray-800'>ID</th>
                 <th class='px-4 py-2 text-left text-md font-medium text-gray-800'>Name</th>
-                <th class='px-4 py-2 text-left text-md font-medium text-gray-800'>Created At</th>
-                {% comment %} {% if request.user.is_authenticated and request.user.role == 'Producer' %} {% endcomment %}
-                {% if allowed %}
+                <th class='px-4 py-2 text-left text-md font-medium text-gray-800'>Price</th>
+                <th class='px-4 py-2 text-left text-md font-medium text-gray-800'>Quantity</th>
+                <th class='px-4 py-2 text-left text-md font-medium text-gray-800'>Category</th>
+                <th class='px-4 py-2 text-left text-md font-medium text-gray-800'>Producer</th>
+                <th class='px-4 py-2 text-left text-md font-medium text-gray-800'>Description</th>
+                {% if request.user.is_authenticated and request.user.role == 'Consumer' %}
                 <th></th>
                 {% endif %}
             </tr>
@@ -23,9 +26,12 @@ Category List
             <tr class='odd:bg-blue-50 even:bg-white hover:bg-gray-50'>
                 <td class="px-4 py-2 whitespace-nowrap">{{c.id}}</td>
                 <td class="px-4 py-2">{{c.name}}</td>
-                <td class="px-4 py-2 whitespace-nowrap">{{c.createdAt}}</td>
-                {% comment %} {% if request.user.is_authenticated and request.user.role == 'Producer' %} {% endcomment %}
-                {% if allowed %}
+                <td class="px-4 py-2 whitespace-nowrap">{{c.price}}</td>
+                <td class="px-4 py-2 whitespace-nowrap">{{c.quantity}}</td>
+                <td class="px-4 py-2">{{c.category}}</td>
+                <td class="px-4 py-2">{{c.producer}}</td>
+                <td class="px-4 py-2">{{c.description}}</td>
+                {% if request.user.is_authenticated and request.user.role == 'Consumer' %}
                 <td>
                     <form method="POST" action="{% url 'category:deleteCategory' c.id %}">
                         {% csrf_token %}
@@ -41,9 +47,8 @@ Category List
             {% endfor %}
         </tbody>
     </table>
-
-{% comment %} {% if request.user.is_authenticated and request.user.role == 'Producer' %} {% endcomment %}
-{% if allowed %}
+{% comment %} 
+{% if request.user.is_authenticated and request.user.role == 'Consumer' %}
 <div class = "mt-8">
     <form method='POST' action="{% url 'category:createCategory' %}">
         {% csrf_token %}
@@ -52,5 +57,5 @@ Category List
         <button type="submit" class="ml-2 bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">Create</button>
     </form>
 </div>
-{% endif %}
+{% endif %} {% endcomment %}
 {% endblock %}

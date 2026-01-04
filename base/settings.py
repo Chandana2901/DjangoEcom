@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'category.apps.CategoryConfig',
     'rest_framework',
     'users',
+    'products.apps.ProductsConfig',
 ]
 
 TAILWIND_APP_NAME = "theme"

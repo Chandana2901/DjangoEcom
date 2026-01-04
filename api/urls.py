@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
-from .views import CategoryViewSet #CategoryListCreateApiView #categoryList
+from .views import CategoryViewSet, userCapabilities #CategoryListCreateApiView #categoryList
 
 router = DefaultRouter()
 router.register("categories", CategoryViewSet)
@@ -11,4 +11,8 @@ router.register("categories", CategoryViewSet)
 #     path('categories/', CategoryListCreateApiView.as_view())
 # ]
 urlpatterns = router.urls
+
+urlpatterns += [
+    path('capabilities/', userCapabilities, name='userCapabilities')
+]
 

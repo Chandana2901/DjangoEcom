@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect
 from .models import Category
+# from django.contrib.auth.decorators import login_required
+# from rest_framework.test import APIClient
 
 # Create your views here.
 
@@ -7,7 +9,9 @@ app_name = 'category'
 
 def categoryList(request):
     categories = Category.objects.all()
-    return render(request, 'category/list.html', {'categories': categories})
+    isProducer = request.user.is_authenticated and request.user.role == 'Producer'
+    
+    return render(request, 'category/list.html', {'categories': categories, 'allowed': isProducer})
 
 def createCategory(request):
     if request.method == 'POST':
