@@ -3,12 +3,18 @@ from .models import Products
 from .utils import checkPermission
 from category.models import Category
 from users.models import Users
+from django.http import HttpResponseForbidden
+
 
 # Create your views here.
 def productList(request):
     products = Products.objects.all()
     isProducer = request.user.is_authenticated and request.user.role == 'Producer'
-    return render(request, 'products/list.html', {'products': products, 'allowed': isProducer})
+    productList = []
+    for product in products:
+        product.allowed = request.user.is_authenticated and product.producer == request.user
+        productList.append(product)
+    return render(request, 'products/list.html', {'products': productList, 'allowed': isProducer})
 
 def createProduct(request):
     if request.method == 'POST':
@@ -19,7 +25,7 @@ def createProduct(request):
         categoryId = request.POST.get('category')
         category = Category.objects.get(pk=categoryId)
         producerUser = request.POST.get('producer', request.user)
-        producer = Users.objects.get(name=producerUser)
+        # producer = Users.objects.get(name=producerUser)
         description = request.POST.get('description')
 
         Products.objects.create(
@@ -27,7 +33,7 @@ def createProduct(request):
             price=price,
             quantity=quantity,
             category=category,
-            producer=producer,
+            producer=producerUser,
             description=description
         )
         return redirect('products:products')
@@ -40,7 +46,9 @@ def createProduct(request):
 def deleteProduct(request, product_id):
     if request.method == 'POST':
         checkPermission(request)
-        product = Products.objects.filter(pk=product_id)
+        product = Products.objects.get(pk=product_id)
+        if product.producer != request.user:
+            return HttpResponseForbidden("You are not allowed to delete this product.")
         product.delete()
         return redirect('products:products')
     

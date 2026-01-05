@@ -8,7 +8,7 @@ class Products(models.Model):
     createdAt = models.DateTimeField(auto_now_add=True)
     quantity = models.IntegerField(default=0)
     category = models.ForeignKey('category.Category', on_delete=models.CASCADE)
-    producer = models.ForeignKey('users.Users', on_delete=models.CASCADE)
+    producer = models.ForeignKey('users.Users', on_delete=models.CASCADE, related_name='products')
     
     def __str__(self):
         return self.name

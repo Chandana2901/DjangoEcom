@@ -37,7 +37,7 @@ Product List
                 <td>
                     <form method="POST" action="{% url 'products:deleteProduct' p.id %}">
                         {% csrf_token %}
-                        <button class="flex items-center justify-center p-2 text-red-600 rounded-full hover:bg-red-100 hover:text-red-800" type="submit">
+                        <button class="flex items-center justify-center p-2 text-red-600 rounded-full hover:bg-red-100 hover:text-red-800" type="submit" {% if not p.allowed %}disabled{% endif %}>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.34 6.75m0 0a2.25 2.25 0 0 1 2.244-2.077h4.5a2.25 2.25 0 0 1 2.244 2.077M19.5 4.5h-15" />
                             </svg>
