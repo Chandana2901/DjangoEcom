@@ -16,6 +16,7 @@ class Users(AbstractBaseUser, PermissionsMixin):
     ROLES = [
         ("Consumer", "Consumer"),
         ("Producer", "Producer"),
+        ('Admin', "Admin")
     ]
     
     role = models.CharField(choices=ROLES, default="Consumer")

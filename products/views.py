@@ -1,40 +1,30 @@
 from django.shortcuts import render, redirect
 from .models import Products
-from .utils import checkPermission
 from category.models import Category
-from users.models import Users
-from django.http import HttpResponseForbidden
+from .services import ProductService
+from django.contrib.auth.decorators import login_required
 
 
 # Create your views here.
 def productList(request):
-    products = Products.objects.all()
-    isProducer = request.user.is_authenticated and request.user.role == 'Producer'
-    productList = []
-    for product in products:
-        product.allowed = request.user.is_authenticated and product.producer == request.user
-        productList.append(product)
-    return render(request, 'products/list.html', {'products': productList, 'allowed': isProducer})
+    products = ProductService.listProducts(request.user)
+    can_create = ProductService.canCreate(request.user)
+    return render(request, 'products/list.html', {'products': products, 'allowed': can_create})
 
+@login_required
 def createProduct(request):
     if request.method == 'POST':
-        checkPermission(request)
-        name = request.POST.get('name')
-        price = request.POST.get('price')
-        quantity = request.POST.get('quantity')
         categoryId = request.POST.get('category')
         category = Category.objects.get(pk=categoryId)
-        producerUser = request.POST.get('producer', request.user)
-        # producer = Users.objects.get(name=producerUser)
-        description = request.POST.get('description')
-
-        Products.objects.create(
-            name=name,
-            price=price,
-            quantity=quantity,
-            category=category,
-            producer=producerUser,
-            description=description
+        ProductService.create(
+            request.user,
+            {
+                'name':request.POST.get('name'),
+                'price':request.POST.get('price'),
+                'quantity': request.POST.get('quantity'),
+                'description': request.POST.get('description'),
+                'category': category,
+            }
         )
         return redirect('products:products')
     
@@ -43,12 +33,25 @@ def createProduct(request):
     return render(request, 'products/createProduct.html', {'categories': categories, 'producer': request.user})
 
 
+@login_required
 def deleteProduct(request, product_id):
     if request.method == 'POST':
-        checkPermission(request)
         product = Products.objects.get(pk=product_id)
-        if product.producer != request.user:
-            return HttpResponseForbidden("You are not allowed to delete this product.")
-        product.delete()
+        ProductService.delete(request.user, product)
         return redirect('products:products')
-    
+
+
+def updateProduct(request, product_id):
+    product = Products.objects.get(pk=product_id)
+    productVal = ProductService.getProduct(request.user, product)
+
+    if request.method == 'POST':
+        data = {
+            'price' : request.POST.get('price', product.price),
+            'description': request.POST.get('description', product.description),
+            'quantity': request.POST.get('quantity', product.quantity)
+        }
+        ProductService.update(user=request.user, data=data, product=product)
+        return redirect('products:products')
+
+    return render(request, 'products/updateProduct.html', {'product' : productVal})
