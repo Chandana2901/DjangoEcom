@@ -40,7 +40,7 @@ def deleteProduct(request, product_id):
         ProductService.delete(request.user, product)
         return redirect('products:products')
 
-
+@login_required
 def updateProduct(request, product_id):
     product = Products.objects.get(pk=product_id)
     productVal = ProductService.getProduct(request.user, product)
@@ -55,3 +55,9 @@ def updateProduct(request, product_id):
         return redirect('products:products')
 
     return render(request, 'products/updateProduct.html', {'product' : productVal})
+
+
+
+@login_required
+def buyProduct(request, product_id):
+    pass

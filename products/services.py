@@ -5,6 +5,10 @@ class ProductService:
     ALLOWED_UPDATE_FIELDS = {"price", "description", "quantity"}
     
     @staticmethod
+    def canBuy(user):
+        return user.is_authenticated and user.role == 'Consumer'
+    
+    @staticmethod
     def canCreate(user):
         return user.is_authenticated and (user.role == 'Producer' or user.role == 'Admin')
 
@@ -22,6 +26,7 @@ class ProductService:
         for p in products:
             p.can_edit = ProductService.canModify(user, p)
             p.can_delete = p.can_edit
+            p.can_buy = ProductService.canBuy(user)
         return products
 
     @staticmethod
