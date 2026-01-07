@@ -3,13 +3,29 @@ from .models import Products
 from category.models import Category
 from .services import ProductService
 from django.contrib.auth.decorators import login_required
+from api.views import GatewayProxyApi
+from django.http import JsonResponse
 
 
 # Create your views here.
 def productList(request):
-    products = ProductService.listProducts(request.user)
-    can_create = ProductService.canCreate(request.user)
-    return render(request, 'products/list.html', {'products': products, 'allowed': can_create})
+    products = Products.objects.all()
+    return JsonResponse({'items': list(products.values())})  
+    # products = ProductService.listProducts(request.user)
+    # can_create = ProductService.canCreate(request.user)
+    # return render(request, 'products/list.html', {'products': products, 'allowed': can_create})
+    # gateway = GatewayProxyApi()
+    # response = gateway.get(request, service='product', path='list/')
+    # payload = response.json()
+    
+    # rights = payload.get('_ui_permissions', {})
+    # return render(
+    #     request,
+    #     'product/list.html',
+    #     {
+    #         'products': payload.get('items')
+    #     }
+    # )
 
 @login_required
 def createProduct(request):

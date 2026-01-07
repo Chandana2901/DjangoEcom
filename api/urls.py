@@ -1,18 +1,26 @@
 from django.urls import path, include
-from rest_framework.routers import DefaultRouter
+from .views import GatewayProxyApi
+# from rest_framework.routers import DefaultRouter
 
-from .views import CategoryViewSet, userCapabilities #CategoryListCreateApiView #categoryList
+# from .views import CategoryViewSet, userCapabilities #CategoryListCreateApiView #categoryList
 
-router = DefaultRouter()
-router.register("categories", CategoryViewSet)
+# router = DefaultRouter()
+# router.register("categories", CategoryViewSet)
 
 # urlpatterns = [
 #     # path('categories/', categoryList)
 #     path('categories/', CategoryListCreateApiView.as_view())
 # ]
-urlpatterns = router.urls
+# urlpatterns = router.urls
 
-urlpatterns += [
-    path('capabilities/', userCapabilities, name='userCapabilities')
+# urlpatterns += [
+#     path('capabilities/', userCapabilities, name='userCapabilities')
+# ]
+
+from .views import productList
+
+# app_name='gateway-proxy'
+urlpatterns = [
+    path('api/gateway/<str:service>/<path:path>', GatewayProxyApi.as_view(), name='gateway-proxy'),
+    path('', productList, name='products')
 ]
-
