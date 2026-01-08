@@ -5,12 +5,15 @@ from .services import ProductService
 from django.contrib.auth.decorators import login_required
 from api.views import GatewayProxyApi
 from django.http import JsonResponse
-
+from .serializers import ProductSerializer
+from django.views.decorators.csrf import csrf_exempt
+import json
 
 # Create your views here.
 def productList(request):
-    products = Products.objects.all()
-    return JsonResponse({'items': list(products.values())})  
+    products = Products.objects.select_related('category', 'producer')
+    serializer = ProductSerializer(products, many=True)
+    return JsonResponse({'items': serializer.data})  
     # products = ProductService.listProducts(request.user)
     # can_create = ProductService.canCreate(request.user)
     # return render(request, 'products/list.html', {'products': products, 'allowed': can_create})
@@ -27,26 +30,34 @@ def productList(request):
     #     }
     # )
 
-@login_required
+@csrf_exempt
 def createProduct(request):
     if request.method == 'POST':
-        categoryId = request.POST.get('category')
-        category = Category.objects.get(pk=categoryId)
-        ProductService.create(
-            request.user,
-            {
-                'name':request.POST.get('name'),
-                'price':request.POST.get('price'),
-                'quantity': request.POST.get('quantity'),
-                'description': request.POST.get('description'),
-                'category': category,
-            }
+        # categoryId = request.POST.get('category')
+        print("request.body:", request.body)
+        data = json.loads(request.body)
+        print("data:", data)
+        # category = Category.objects.get(pk=categoryId)
+        producer = request.headers.get('X-User-Id')
+        category = Category.objects.get(pk=data.get('category_id'))
+        product = Products.objects.create(
+            # request.user,
+            # {
+                name=data.get('name'),
+                price=data.get('price'),
+                quantity=data.get('quantity'),
+                description=data.get('description'),
+                category=category,
+                producer=producer
+            # }
         )
-        return redirect('products:products')
+        # return redirect('products:products')
+        return JsonResponse({'message': 'Product created successfully', 'product_id': product.id}, status=201)
     
-    categories = Category.objects.all()
+    # categories = Category.objects.all()
     
-    return render(request, 'products/createProduct.html', {'categories': categories, 'producer': request.user})
+    # return render(request, 'products/createProduct.html', {'categories': categories, 'producer': request.user})
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 
 @login_required

@@ -3,16 +3,21 @@ from .models import Category
 # from django.contrib.auth.decorators import login_required
 # from rest_framework.test import APIClient
 from .services import CategoryService
-
+from django.http import JsonResponse
 
 # Create your views here.
 
 app_name = 'category'
 
+
 def categoryList(request):
-    categories = CategoryService.categoryList(request.user)
-    isProducer = CategoryService.canCreateAndModify(request.user)
-    return render(request, 'category/list.html', {'categories': categories, 'allowed': isProducer})
+    print("categoryList called")
+    categories = Category.objects.all()
+    print("categories : ", categories)
+    return JsonResponse({'items': list(categories.values())})
+    # categories = CategoryService.categoryList(request.user)
+    # isProducer = CategoryService.canCreateAndModify(request.user)
+    # return render(request, 'category/list.html', {'categories': categories, 'allowed': isProducer})
 
 def createCategory(request):
     if request.method == 'POST':

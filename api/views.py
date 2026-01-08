@@ -53,15 +53,52 @@
 
 from .permissions import GatewayProxyApi
 from django.shortcuts import render, redirect
+import json 
+from django.contrib.auth.decorators import login_required
 
+
+@login_required
 def productList(request):
     gateway = GatewayProxyApi()
-    response = gateway.get(request, service='product', path='')
-    data = response.json()
+    response = gateway.get(request, service='products', path='list/')
+    data = json.loads(response.content)
     
     return render(request, 'products/list.html', {
         'products': data.get('items', []),
         'allowed': data.get('_ui_permissions',{}).get('can_create', False),
         'role': data.get('_ui_permissions', {}).get('role_label')
         })
+    
+@login_required
+def createProductView(request):
+    gateway = GatewayProxyApi()
+    catResponse = gateway.get(request, service='category', path='list/')
+    print("catResponse:", catResponse)
+    try:
+        data = json.loads(catResponse.content)
+        categories = data.get('items', [])
+        print("categories:", categories)
+    except :
+        categories = []
+    
+    return render(request, 'products/createProduct.html', {
+        'categories': categories,
+        'producer': request.user
+    })
+
+@login_required
+def createProduct(request):
+    print("createProduct called")
+    if request.method == 'POST':
+        gateway = GatewayProxyApi()
+        response = gateway.post(request, service='products', path='create/')
+        
+        if response.status_code == 201:
+            return redirect('products')
+        else:
+            return render(request, 'products/createProduct.html', {
+                'error': 'Failed to create product'
+            })
+    # return render(request, 'products/createProduct.html')
+
 

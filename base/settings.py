@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'category.apps.CategoryConfig',
     'rest_framework',
     'users',
-    'products.apps.ProductsConfig',
+    'products',
+    # 'products.apps.ProductsConfig',
     'cart.apps.CartConfig',
 ]
 

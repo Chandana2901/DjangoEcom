@@ -11,9 +11,11 @@ import requests
 from rest_framework.permissions import IsAuthenticated
 from django.http import JsonResponse, HttpResponse
 from rest_framework.views import APIView  
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 
 class GatewayProxyApi(APIView):
     permission_classes = [IsAuthenticated]
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
     
     ACCESS_RULES = {
         'category':{
@@ -21,7 +23,7 @@ class GatewayProxyApi(APIView):
             'Consumer' : ['GET'],
             'Producer': ['GET'],
         },
-        'product':{
+        'products':{
             'Admin': ['GET', 'POST', 'DELETE'],
             'Consumer': ['GET'],
             'Producer': ['GET', 'POST', 'DELETE', 'PUT']
@@ -31,7 +33,7 @@ class GatewayProxyApi(APIView):
     def handle_request(self, request, service, path=""):
         userRole = request.user.role
         method = request.method
-        ports = {'product': '8002', 'category': '8003'}
+        ports = {'products': '8002', 'category': '8003'}
         port = ports.get(service)
         
         allowedMethods = self.ACCESS_RULES.get(service,{}).get(userRole,[])
@@ -54,7 +56,7 @@ class GatewayProxyApi(APIView):
                 url=targetUrl,
                 headers=headers,
                 params=request.GET,
-                data=request.body,
+                json=request.body if hasattr(request, "data") else None,
                 timeout=5
             )
             data = response.json()
@@ -71,10 +73,9 @@ class GatewayProxyApi(APIView):
             'role_label': userRole
         }
         
-        return HttpResponse(
+        return JsonResponse(
             data,
             status=response.status_code,
-            content=response.headers.get('Content-Type', 'application/json')
         )
     
     def get(self, request, service, path=""):

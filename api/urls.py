@@ -17,10 +17,12 @@ from .views import GatewayProxyApi
 #     path('capabilities/', userCapabilities, name='userCapabilities')
 # ]
 
-from .views import productList
+from .views import *
 
 # app_name='gateway-proxy'
 urlpatterns = [
     path('api/gateway/<str:service>/<path:path>', GatewayProxyApi.as_view(), name='gateway-proxy'),
-    path('', productList, name='products')
+    path('products/', productList, name='products'),
+    path('productsCreate/', createProductView, name='productsCreate'),
+    path('productsCreateSubmit/', createProduct, name='productsCreateSubmit'),
 ]
