@@ -11,9 +11,7 @@ app_name = 'category'
 
 
 def categoryList(request):
-    print("categoryList called")
     categories = Category.objects.all()
-    print("categories : ", categories)
     return JsonResponse({'items': list(categories.values())})
     # categories = CategoryService.categoryList(request.user)
     # isProducer = CategoryService.canCreateAndModify(request.user)

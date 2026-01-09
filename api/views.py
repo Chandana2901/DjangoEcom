@@ -68,6 +68,16 @@ def productList(request):
         'allowed': data.get('_ui_permissions',{}).get('can_create', False),
         'role': data.get('_ui_permissions', {}).get('role_label')
         })
+
+@login_required
+def categoryList(request):
+    gateway = GatewayProxyApi()
+    response = gateway.get(request, service='category', path='list/')
+    data = json.loads(response.content)
+    return render(request, 'category/list.html', {
+        'categories': data.get('items', [])
+    })
+
     
 @login_required
 def createProductView(request):

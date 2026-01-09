@@ -23,7 +23,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="flex h-16 items-center justify-between">
             <div class="flex items-center">
-              <a class="text-xl font-bold text-gray-600" href='{% url "category:categories" %}'>Ecommerce Site</a>
+              <a class="text-xl font-bold text-gray-600" href={% url "categories" %}>Ecommerce Site</a>
             </div>
             <div class="hidden md:flex items-center space-x-8">
               <a href="{% url 'products' %}" class="text-gray-700 hover:text-gray-600 font-medium">Products</a>
