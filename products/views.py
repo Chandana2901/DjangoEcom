@@ -59,11 +59,11 @@ def createProduct(request):
     return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 
-@login_required
+@csrf_exempt
 def deleteProduct(request, product_id):
     if request.method == 'POST':
         product = Products.objects.get(pk=product_id)
-        ProductService.delete(request.user, product)
+        product.delete()
         return redirect('products:products')
 
 @login_required

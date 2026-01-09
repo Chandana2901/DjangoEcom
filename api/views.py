@@ -100,4 +100,15 @@ def createProduct(request):
             })
     # return render(request, 'products/createProduct.html')
 
+@login_required
+def deleteProduct(request, product_id):
+    if request.method == 'POST':
+        gateway = GatewayProxyApi()
+        response = gateway.delete(request, service='products', path=f'delete/{product_id}/')
+        if response.status_code == 200:
+            return redirect('products')
+        else:
+            return render(request, 'products/list.html', {
+                'error': 'Failed to delete product'
+            })
 
