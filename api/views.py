@@ -88,7 +88,6 @@ def createProductView(request):
 
 @login_required
 def createProduct(request):
-    print("createProduct called")
     if request.method == 'POST':
         gateway = GatewayProxyApi()
         response = gateway.post(request, service='products', path='create/')

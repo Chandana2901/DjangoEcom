@@ -8,6 +8,7 @@ from django.http import JsonResponse
 from .serializers import ProductSerializer
 from django.views.decorators.csrf import csrf_exempt
 import json
+from users.models import Users
 
 # Create your views here.
 def productList(request):
@@ -33,13 +34,11 @@ def productList(request):
 @csrf_exempt
 def createProduct(request):
     if request.method == 'POST':
-        # categoryId = request.POST.get('category')
-        print("request.body:", request.body)
         data = json.loads(request.body)
-        print("data:", data)
         # category = Category.objects.get(pk=categoryId)
-        producer = request.headers.get('X-User-Id')
-        category = Category.objects.get(pk=data.get('category_id'))
+        producerId = request.headers.get('X-User-Id')
+        producer = Users.objects.get(pk=producerId)
+        category = Category.objects.get(pk=data.get('category'))
         product = Products.objects.create(
             # request.user,
             # {

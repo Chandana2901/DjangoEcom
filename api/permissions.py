@@ -49,14 +49,18 @@ class GatewayProxyApi(APIView):
             'X-User-Role': userRole,
             'Authorization': request.headers.get('Authorization', '')
         }
-        
+        if request.method == 'POST':
+            payload = request.POST.dict()
+            payload.pop('csrfmiddlewaretoken', None)
+        else:
+            payload = None
         try:
             response = requests.request(
                 method=method,
                 url=targetUrl,
                 headers=headers,
                 params=request.GET,
-                json=request.body if hasattr(request, "data") else None,
+                json=payload,
                 timeout=5
             )
             data = response.json()
