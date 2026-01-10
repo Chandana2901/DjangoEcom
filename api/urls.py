@@ -22,6 +22,7 @@ from .views import *
 # app_name='gateway-proxy'
 urlpatterns = [
     path('api/gateway/<str:service>/<path:path>', GatewayProxyApi.as_view(), name='gateway-proxy'),
+    path('login/', loginUser, name='login'),
     path('products/', productList, name='products'),
     path('productsCreate/', createProductView, name='productsCreate'),
     path('productsCreateSubmit/', createProduct, name='productsCreateSubmit'),

@@ -27,20 +27,29 @@ class GatewayProxyApi(APIView):
             'Admin': ['GET', 'POST', 'DELETE'],
             'Consumer': ['GET'],
             'Producer': ['GET', 'POST', 'DELETE', 'PUT']
+        },
+        'users':{
+            'Admin': ['POST'],
+            'Consumer': ['POST'],
+            'Producer': ['POST']
         }
     }
+    PORTS = {'products': '8002', 'category': '8003', 'users': '8001'}
     
     def handle_request(self, request, service, path=""):
-        userRole = request.user.role
         method = request.method
-        ports = {'products': '8002', 'category': '8003'}
-        port = ports.get(service)
+        userRole = None
+        loginPath = service == 'users' and path == 'login/'
+        port = self.PORTS.get(service)
+        allowedMethods = []
         
-        allowedMethods = self.ACCESS_RULES.get(service,{}).get(userRole,[])
-        if method not in allowedMethods:
-            return JsonResponse({
-                'error': 'unauthorized'
-            }, status=403)
+        if not loginPath:
+            userRole = request.user.role
+            allowedMethods = self.ACCESS_RULES.get(service,{}).get(userRole,[])
+            if method not in allowedMethods:
+                return JsonResponse({
+                    'error': 'unauthorized'
+                }, status=403)
         
         targetUrl = f"http://127.0.0.1:{port}/{service}/{path}"
         

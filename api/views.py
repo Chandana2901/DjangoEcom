@@ -55,6 +55,32 @@ from .permissions import GatewayProxyApi
 from django.shortcuts import render, redirect
 import json 
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login, get_user_model
+
+
+def loginUser(request):
+    if request.method == 'POST':
+        gateway = GatewayProxyApi()
+        response = gateway.post(request, service='users', path='login/')
+        if response.status_code == 200:
+            data = json.loads(response.content)
+            userId = data.get('user_id')
+            User = get_user_model()
+            try:
+                user = User.objects.get(pk=userId)
+                login(request, user)
+                
+                nextUrl = request.GET.get('next', 'categories')
+                return redirect(nextUrl)
+            except User.DoesNotExist:
+                return render(request, 'users/login.html', {
+                    'error': 'User does not exist'
+                })
+        else:
+            return render(request, 'users/login.html', {
+                'error': 'Invalid credentials'
+            })
+    return render(request, 'users/login.html')
 
 
 @login_required
@@ -75,7 +101,9 @@ def categoryList(request):
     response = gateway.get(request, service='category', path='list/')
     data = json.loads(response.content)
     return render(request, 'category/list.html', {
-        'categories': data.get('items', [])
+        'categories': data.get('items', []),
+        'allowed': data.get('_ui_permissions',{}).get('can_create', False),
+        'role': data.get('_ui_permissions', {}).get('role_label')
     })
 
     
