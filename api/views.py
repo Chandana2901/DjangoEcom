@@ -82,6 +82,14 @@ def loginUser(request):
             })
     return render(request, 'users/login.html')
 
+def logoutUser(request):
+    from django.contrib.auth import logout
+    gateway = GatewayProxyApi()
+    response = gateway.post(request, service='users', path='logout/')
+    if response.status_code == 200:
+        logout(request)
+    return redirect('categories')
+
 
 @login_required
 def productList(request):

@@ -44,4 +44,4 @@ def loginUser(request):
 
 def logoutUser(request):
     logout(request)
-    return redirect('categories')
+    return JsonResponse({'message': 'Logout successful'}, status=200)

@@ -23,6 +23,7 @@ from .views import *
 urlpatterns = [
     path('api/gateway/<str:service>/<path:path>', GatewayProxyApi.as_view(), name='gateway-proxy'),
     path('login/', loginUser, name='login'),
+    path('logout/', logoutUser, name='logoutGateway'),
     path('products/', productList, name='products'),
     path('productsCreate/', createProductView, name='productsCreate'),
     path('productsCreateSubmit/', createProduct, name='productsCreateSubmit'),

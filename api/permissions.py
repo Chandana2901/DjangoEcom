@@ -39,7 +39,7 @@ class GatewayProxyApi(APIView):
     def handle_request(self, request, service, path=""):
         method = request.method
         userRole = None
-        loginPath = service == 'users' and path == 'login/'
+        loginPath = service == 'users' and (path == 'login/' or path == 'logout/')
         port = self.PORTS.get(service)
         allowedMethods = []
         
