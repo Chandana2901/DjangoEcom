@@ -90,6 +90,32 @@ def logoutUser(request):
         logout(request)
     return redirect('categories')
 
+@login_required
+def createCategory(request):
+    if request.method == 'POST':
+        gateway = GatewayProxyApi()
+        response = gateway.post(request, service='category', path='create/')
+        if response.status_code == 200:
+            return redirect('categories')
+        else:
+            return render(request, 'category/list.html', {
+                'error': 'Failed to create category'
+            })
+    return render(request, 'category/list.html')
+
+@login_required
+def deleteCategory(request, category_id):
+    if request.method == 'POST':
+        gateway = GatewayProxyApi()
+        response = gateway.delete(request, service='category', path=f'delete/{category_id}/')
+        if response.status_code == 200:
+            return redirect('categories')
+        else:
+            return render(request, 'category/list.html', {
+                'error': 'Failed to delete category'
+            })
+    return render(request, 'category/list.html')
+
 
 @login_required
 def productList(request):
@@ -111,6 +137,7 @@ def categoryList(request):
     return render(request, 'category/list.html', {
         'categories': data.get('items', []),
         'allowed': data.get('_ui_permissions',{}).get('can_create', False),
+        'delete_allowed': data.get('_ui_permissions',{}).get('can_delete', False),
         'role': data.get('_ui_permissions', {}).get('role_label')
     })
 

@@ -4,6 +4,8 @@ from .models import Category
 # from rest_framework.test import APIClient
 from .services import CategoryService
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
 
 # Create your views here.
 
@@ -17,16 +19,16 @@ def categoryList(request):
     # isProducer = CategoryService.canCreateAndModify(request.user)
     # return render(request, 'category/list.html', {'categories': categories, 'allowed': isProducer})
 
+@csrf_exempt
 def createCategory(request):
     if request.method == 'POST':
-        data = {
-            'name': request.POST.get('name')
-        }
-        CategoryService.createCategory(request.user, data)
-        return redirect('category:categories')
+        data = json.loads(request.body)
+        Category.objects.create(name=data.get('name'))
+        return JsonResponse({'status': 'success'}, status=200)
 
+@csrf_exempt
 def deleteCategory(request, category_id):
     if request.method == 'POST':
         category = Category.objects.get(pk=category_id)
-        CategoryService.deleteCategory(request.user, category)
-        return redirect('category:categories')
+        category.delete()
+        return JsonResponse({'status': 'success'}, status=200)
