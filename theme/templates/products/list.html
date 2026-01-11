@@ -45,7 +45,7 @@ Product List
                     </form>
                 </td>
                 {% endif %}
-                {% if allowed %}
+                {% if p.can_delete %}
                 {% if p.can_edit %}
                 <td>
                     <a href="{% url 'products:updateProduct' p.id %}"

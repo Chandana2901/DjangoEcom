@@ -122,9 +122,12 @@ def productList(request):
     gateway = GatewayProxyApi()
     response = gateway.get(request, service='products', path='list/')
     data = json.loads(response.content)
-    
+    items = data.get('items', [])
+    for item in items:
+        item['can_delete'] = (item.get('producer') == request.user.name)
+
     return render(request, 'products/list.html', {
-        'products': data.get('items', []),
+        'products': items,
         'allowed': data.get('_ui_permissions',{}).get('can_create', False),
         'role': data.get('_ui_permissions', {}).get('role_label')
         })
