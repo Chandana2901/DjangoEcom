@@ -66,21 +66,25 @@ def deleteProduct(request, product_id):
         product.delete()
         return redirect('products:products')
 
-@login_required
+@csrf_exempt
+def getProduct(request, product_id):
+    product = Products.objects.get(pk=product_id)
+    productData = ProductSerializer(product).data
+    return JsonResponse({'product': productData}, status=200)
+
+
+@csrf_exempt
 def updateProduct(request, product_id):
     product = Products.objects.get(pk=product_id)
-    productVal = ProductService.getProduct(request.user, product)
-
+    productSerialized = ProductSerializer(product).data
     if request.method == 'POST':
-        data = {
-            'price' : request.POST.get('price', product.price),
-            'description': request.POST.get('description', product.description),
-            'quantity': request.POST.get('quantity', product.quantity)
-        }
-        ProductService.update(user=request.user, data=data, product=product)
-        return redirect('products:products')
-
-    return render(request, 'products/updateProduct.html', {'product' : productVal})
+        body = json.loads(request.body)
+        product.price= float(body.get('price', product.price))
+        product.description =body.get('description', product.description)
+        product.quantity= int(body.get('quantity', product.quantity))
+        product.save()
+        return JsonResponse({'message': 'Product updated successfully'}, status=200)
+    return JsonResponse({'product': productSerialized}, status=204)
 
 
 

@@ -5,7 +5,6 @@ Product List
 {% endblock %}
 
 {% block content %}
-
     <table class="table-auto min-w-full border-separate">
         <thead>
             <tr >
@@ -17,7 +16,7 @@ Product List
                 <th class='px-4 py-2 text-left text-md font-medium text-gray-800'>Producer</th>
                 <th class='px-4 py-2 text-left text-md font-medium text-gray-800'>Description</th>
                 {% comment %} {% if request.user.is_authenticated and request.user.role == 'Consumer' %} {% endcomment %}
-                {% if allowed %}
+                {% if role == 'Producer' %}
                 <th></th>
                 <th></th>
                 {% endif %}
@@ -48,7 +47,7 @@ Product List
                 {% if p.can_delete %}
                 {% if p.can_edit %}
                 <td>
-                    <a href="{% url 'products:updateProduct' p.id %}"
+                    <a href="{% url 'productsUpdate' p.id %}"
                     class="rounded-lg bg-gray-600 px-4 py-2 text-sm font-small text-white hover:bg-gray-700" 
                     >Update</a>
                 </td>

@@ -8,7 +8,7 @@ Create A Product
 
 <div class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
     <h2 class="text-2xl font-bold mb-6 text-center">Update Product : {{product.name}}</h2>
-<form method='POST' action="{% url 'products:updateProduct' product.id %}">
+<form method='POST' action="{% url 'productsUpdate' product.id %}">
     {% csrf_token %}
     <div class="mb-4">
         <label for='name' class='block text-gray-700 mb-1'>Name : </label>

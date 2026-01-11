@@ -125,6 +125,7 @@ def productList(request):
     items = data.get('items', [])
     for item in items:
         item['can_delete'] = (item.get('producer') == request.user.name)
+        item['can_edit'] = (item.get('producer') == request.user.name)
 
     return render(request, 'products/list.html', {
         'products': items,
@@ -188,3 +189,20 @@ def deleteProduct(request, product_id):
                 'error': 'Failed to delete product'
             })
 
+
+@login_required
+def updateProduct(request, product_id):
+    gateway = GatewayProxyApi()
+    
+    if request.method == 'POST':
+        response = gateway.post(request, service='products', path=f'update/{product_id}/')
+        data = json.loads(response.content)
+        if response.status_code == 200:
+            return redirect('products')
+        else:
+            return render(request, 'products/updateProduct.html', {
+                'error': 'Failed to update product'
+            })
+    response = gateway.get(request, service='products', path=f'get/{product_id}/')
+    data = json.loads(response.content)
+    return render(request, 'products/updateProduct.html', {'product': data['product']})

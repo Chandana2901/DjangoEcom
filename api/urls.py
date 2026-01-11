@@ -30,5 +30,6 @@ urlpatterns = [
     path('productsCreate/', createProductView, name='productsCreate'),
     path('productsCreateSubmit/', createProduct, name='productsCreateSubmit'),
     path('productsDelete/<int:product_id>/', deleteProduct, name='productsDelete'),
+    path('productsUpdate/<int:product_id>/', updateProduct, name='productsUpdate'),
     path('categories/', categoryList, name='categories'),
 ]
