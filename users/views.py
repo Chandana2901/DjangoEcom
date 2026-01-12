@@ -9,17 +9,27 @@ import json
 # Create your views here.
 app_name = 'users'
 
+@csrf_exempt
 def createUser(request):
     if request.method == 'POST':
-        name = request.POST.get('name')
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        phoneNumber = request.POST.get('phoneNumber')
-        address = request.POST.get('address')
-        role = request.POST.get('role', 'Consumer')
-        Users.objects.create_user(name=name, email=email, password=password, phoneNumber=phoneNumber, address=address, role=role)
-        return redirect('category:categories')
-    return render(request, 'users/signup.html')
+        data = json.loads(request.body)
+        if Users.objects.filter(email=data.get('email')).exists():
+            return JsonResponse({'error': 'User already exists'}, status=400)
+        name = data.get('name')
+        email = data.get('email')
+        password = data.get('password')
+        phoneNumber = data.get('phoneNumber')
+        address = data.get('address')
+        role = data.get('role', 'Consumer')
+        user = Users.objects.create_user(name=name, 
+                                         email=email, 
+                                         password=password, 
+                                         phoneNumber=phoneNumber, 
+                                         address=address, 
+                                         role=role)
+        # return redirect('category:categories')
+        return JsonResponse({'message': 'User created'}, status=201)
+    # return render(request, 'users/signup.html')
 
 @csrf_exempt
 def loginUser(request):

@@ -58,6 +58,16 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, get_user_model
 
 
+def signUp(request):
+    if request.method == 'POST':
+        gateway = GatewayProxyApi()
+        response = gateway.post(request, service='users', path='signup/')
+        print("response : ", response)
+        if response.status_code == 200:
+            return redirect('products')
+    return render(request, 'users/signup.html')
+
+
 def loginUser(request):
     if request.method == 'POST':
         gateway = GatewayProxyApi()

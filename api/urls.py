@@ -24,6 +24,7 @@ urlpatterns = [
     path('api/gateway/<str:service>/<path:path>', GatewayProxyApi.as_view(), name='gateway-proxy'),
     path('login/', loginUser, name='login'),
     path('logout/', logoutUser, name='logoutGateway'),
+    path('signup/',signUp, name='signup' ),
     path('createCategory/', createCategory, name='createCategory'),
     path('deleteCategory/<int:category_id>/', deleteCategory, name='deleteCategory'),
     path('products/', productList, name='products'),

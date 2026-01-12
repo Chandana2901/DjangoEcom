@@ -42,12 +42,15 @@ class GatewayProxyApi(APIView):
     def handle_request(self, request, service, path=""):
         method = request.method
         userRole = None
+        userName = None
         loginPath = service == 'users' and (path == 'login/' or path == 'logout/')
+        signupPath = service == 'users' and path == 'signup/'
         port = self.PORTS.get(service)
         allowedMethods = []
         
-        if not loginPath:
+        if not loginPath and not signupPath:
             userRole = request.user.role
+            userName = request.user.name
             allowedMethods = self.ACCESS_RULES.get(service,{}).get(userRole,[])
             if method not in allowedMethods:
                 return JsonResponse({
@@ -59,7 +62,7 @@ class GatewayProxyApi(APIView):
         headers = {
             'X-User-Id': str(request.user.id),
             'X-User-Role': userRole,
-            'X-User-Name': request.user.name,
+            'X-User-Name': userName ,
             'Authorization': request.headers.get('Authorization', '')
         }
         if request.method == 'POST':
