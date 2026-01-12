@@ -36,7 +36,7 @@ Product List
                 {% comment %} {% if request.user.is_authenticated and request.user.role == 'Consumer' %} {% endcomment %}
                 {% if p.can_buy %}
                 <td>
-                    <form method='POST' action="{% url 'cart:addToCart' p.id %}">
+                    <form method='POST' action="{% url 'cartAdd' p.id %}">
                         {% csrf_token %}
                     <button type="submit"
                     class="rounded-lg bg-green-600 px-4 py-2 text-sm font-small text-white hover:bg-green-700" 

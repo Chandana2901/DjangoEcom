@@ -32,9 +32,12 @@ class GatewayProxyApi(APIView):
             'Admin': ['POST'],
             'Consumer': ['POST'],
             'Producer': ['POST']
+        },
+        'cart':{
+            'Consumer': ['POST', 'GET']
         }
     }
-    PORTS = {'products': '8002', 'category': '8003', 'users': '8001'}
+    PORTS = {'products': '8002', 'category': '8003', 'users': '8001', 'cart': '8004'}
     
     def handle_request(self, request, service, path=""):
         method = request.method
@@ -56,6 +59,7 @@ class GatewayProxyApi(APIView):
         headers = {
             'X-User-Id': str(request.user.id),
             'X-User-Role': userRole,
+            'X-User-Name': request.user.name,
             'Authorization': request.headers.get('Authorization', '')
         }
         if request.method == 'POST':
@@ -83,6 +87,7 @@ class GatewayProxyApi(APIView):
             'can_create': 'POST' in allowedMethods,
             'can_delete': 'DELETE' in allowedMethods,
             'can_update': 'PUT' in allowedMethods,
+            'can_buy': service == 'products' and userRole == 'Consumer',
             'role_label': userRole
         }
         

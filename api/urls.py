@@ -32,4 +32,6 @@ urlpatterns = [
     path('productsDelete/<int:product_id>/', deleteProduct, name='productsDelete'),
     path('productsUpdate/<int:product_id>/', updateProduct, name='productsUpdate'),
     path('categories/', categoryList, name='categories'),
+    path('cart/', viewCart, name='viewCart'),
+    path('cartAdd/<int:product_id>/', addToCart, name='cartAdd' )
 ]

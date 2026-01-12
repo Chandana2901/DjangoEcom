@@ -126,6 +126,7 @@ def productList(request):
     for item in items:
         item['can_delete'] = (item.get('producer') == request.user.name)
         item['can_edit'] = (item.get('producer') == request.user.name)
+        item['can_buy'] = data.get('_ui_permissions', {}).get('can_buy', False)
 
     return render(request, 'products/list.html', {
         'products': items,
@@ -206,3 +207,30 @@ def updateProduct(request, product_id):
     response = gateway.get(request, service='products', path=f'get/{product_id}/')
     data = json.loads(response.content)
     return render(request, 'products/updateProduct.html', {'product': data['product']})
+
+
+@login_required
+def viewCart(request):
+    print("Viewing cart")
+    gateway = GatewayProxyApi()
+    response = gateway.get(request, service='cart', path='list/')
+    data = json.loads(response.content)
+    return render(request, 'cart/view.html', {
+        'cart': data.get('data', {}).get('cart'),
+        'items': data.get('data', {}).get('items'),
+        'total': data.get('data', {}).get('total')
+    })
+
+
+@login_required
+def addToCart(request, product_id):
+    if request.method == 'POST':
+        gateway = GatewayProxyApi()
+        response = gateway.post(request, service='cart', path=f'add/{product_id}/')
+        print("adding to cart response:", response )
+        if response.status_code == 200:
+            return redirect('viewCart')
+        else:
+            return render(request, 'products/list.html', {
+                'error': 'Failed to add to cart'
+            })

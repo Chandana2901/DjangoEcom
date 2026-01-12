@@ -32,7 +32,7 @@
               {% if request.user.is_authenticated %}
               <p class="text-gray-600 hover:text-gray-600">Welcome {{ request.user.name }} !</p>
               {% comment %} View cart {% endcomment %}
-              <a href="{% url 'cart:viewCart' %}" class="rounded-lg bg-gray-500 px-4 py-2 text-sm font-medium text-white hover:bg-gray-600">View Cart</a>
+              <a href="{% url 'viewCart' %}" class="rounded-lg bg-gray-500 px-4 py-2 text-sm font-medium text-white hover:bg-gray-600">View Cart</a>
               <a href="{% url 'logoutGateway' %}" class="rounded-lg bg-gray-600 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700">Logout</a>
               {% else %}
               {% comment %} <p>Welcome Guest!</p> {% endcomment %}

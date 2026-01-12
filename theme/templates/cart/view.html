@@ -24,10 +24,10 @@ Cart
         <tbody class="bg-white divide-y divide-gray-100">
             {% for item in items %}
             <tr class='odd:bg-blue-50 even:bg-white hover:bg-gray-50'>
-                <td class="px-4 py-2">{{item.product.name}}</td>
-                <td class="px-4 py-2 whitespace-nowrap">{{item.product.price}}</td>
+                <td class="px-4 py-2">{{item.product}}</td>
+                <td class="px-4 py-2 whitespace-nowrap">{{item.productPrice}}</td>
                 <td class="px-4 py-2 whitespace-nowrap">{{item.quantity}}</td>
-                <td class="px-4 py-2">{{item.product.price}}</td>
+                <td class="px-4 py-2">{{item.subtotal}}</td>
                 {% comment %} {% if request.user.is_authenticated and request.user.role == 'Consumer' %} {% endcomment %}
                 {% comment %} {% if p.can_buy %}
                 <td>
@@ -60,7 +60,16 @@ Cart
         </tbody>
     </table>
 
-<h3 class="decoration-emerald-100">Total Amount: {{ total }}</h3>
+{% comment %} <h3 class="decoration-emerald-100">Total Amount: {{ total }}</h3> {% endcomment %}
+
+
+<h3 class="text-lg font-semibold text-black-900">
+  Total Amount:
+  <span class="text-emerald-600 dark:text-emerald-400 font-bold">
+    {{ total }}
+  </span>
+</h3>
+
 {% comment %} {% if allowed %}
 <div class = "mt-8">
     <a href="{% url 'products:createProduct' %}" class="rounded-lg bg-gray-600 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700">Create New Product</a>
