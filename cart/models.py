@@ -4,7 +4,8 @@ from products.models import Products
 
 # Create your models here.
 class Cart(models.Model):
-    user = models.OneToOneField(Users, on_delete=models.CASCADE)
+    # user = models.OneToOneField(Users, on_delete=models.CASCADE)
+    user = models.PositiveIntegerField(unique=True) 
     
 
 class CartItem(models.Model):

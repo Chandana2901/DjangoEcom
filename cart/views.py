@@ -32,7 +32,7 @@ def addToCart(request, product_id):
     if request.method == 'POST':
         product = Products.objects.get(pk=product_id)
         user = request.headers.get('X-User-Id')
-        cart = Cart.objects.get_or_create(user=user)[0]
+        cart = Cart.objects.get_or_create(user=int(user))[0]
         data = json.loads(request.body)
         item, created = CartItem.objects.get_or_create(
             cart=cart,
